@@ -2722,6 +2722,13 @@ def get_service_data_from_advertisement(
         if uuid_str in service_data_dict:
             return service_data_dict[uuid_str]
 
+    # Other ZengGe UUIDs in the 0x5A00-0x5BFF range. Surplife IOTBT string lights
+    # (product 0xC5, e.g. "IOTBTE70") advertise the same 14-byte payload under 0x5A02.
+    for key in service_data_dict:
+        k = key.lower()
+        if k.startswith(("00005a", "00005b")) and k.endswith("-0000-1000-8000-00805f9b34fb"):
+            return service_data_dict[key]
+
     # Try just "ffff" or "FFFF" as fallback
     for key in service_data_dict:
         if "ffff" in key.lower():
